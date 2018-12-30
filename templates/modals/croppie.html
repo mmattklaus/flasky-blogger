@@ -1,0 +1,29 @@
+<div class="modal croppie-modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Crop Image</p>
+      <button class="delete destroyCroppie" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="columns">
+          <div class="column is-four-fifths">
+            <div id="croppable"></div>
+          </div>
+          <div class="column is-one-fifths">
+              <div class="buttons">
+                  <button class="button rotateCroppieLeft"><i class="fa fa-undo"></i></button>
+                  <button class="button rotateCroppieRight"><i class="fa fa-redo"></i></button>
+              </div>
+          </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+        <div class="buttons is-pulled-right">
+            <button class="button is-success saveCroppie">Save changes</button>
+            <button class="button destroyCroppie">Cancel</button>
+        </div>
+
+    </footer>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
+from flask import Flask, render_template, request, flash, redirect, url_for, session, send_from_directory
 from wtforms import Form, PasswordField, StringField, TextAreaField, BooleanField, validators
 from db import update_db, query_db
 from passlib.hash import sha256_crypt
@@ -6,12 +6,14 @@ from functools import wraps
 import datetime
 from werkzeug.utils import secure_filename
 import os
+import base64, re
 
 UPLOAD_FOLDER = 'storage/app/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 dt_format = '%Y-%m-%d %H:%M:%S'
 
 app = Flask(__name__)
+app.instance_path = os.path.join(app.root_path, 'storage/app')
 app.config['DATABASE'] = 'database.db'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -31,24 +33,34 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def upload_file(file, path=None, fname=datetime.datetime.today().strftime(dt_format), ext='.png'):
+def upload_file(file, path='uploads', fname=datetime.datetime.today().strftime(dt_format), ext='.png'):
     path = path or app.config['UPLOAD_FOLDER']
-    # check if the post request has the file part
-    if 'file' not in request.files:
-        flash('No file part')
-        return None
-    # file = request.files['file']
-    # if user does not select file, browser also
-    # submit a empty part without filename
-    if file.filename == '':
-        flash('No selected file', 'warning')
-        return None
-    if file and allowed_file(file.filename + ext):
-        filename = secure_filename(fname)
-        if not os.path.exists(path):
-            os.makedirs(path)
-        file.save(os.path.join(path, filename))
-        return filename
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(fname + ext)
+        write_dir = os.path.join(app.instance_path, path)
+        verify_create_path(write_dir)
+        file.save(os.path.join(write_dir, filename))
+        return os.path.join('storage', path, filename)
+
+
+def save_base64(b64_string, path='uploads', fname=datetime.datetime.today().strftime(dt_format), ext='.png'):
+    path = os.path.join(app.instance_path, path)
+    fname = os.path.join(path, (fname + ext))
+    verify_create_path(path)
+    with open(fname, "wb") as fh:
+        fh.write(base64.decodebytes(b64_string))
+        return fname
+
+
+def verify_create_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+@app.route('/storage/<path:resource>')
+def get_resource(resource):
+    return send_from_directory(directory=os.path.join(app.instance_path), filename=resource)
 
 
 @app.route('/')
@@ -111,7 +123,25 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         data = form.name.data, form.email.data, form.username.data, sha256_crypt.hash(form.password.data)
-        sql = 'INSERT INTO users (name, email, username, password) VALUES (?, ?, ?, ?)'
+        photo = False
+        if request.files['photo'] and request.files['photo'].filename:
+            file = request.files['photo']
+            photo_path = upload_file(file, 'uploads/profiles', form.username.data)
+            data = data + (photo_path, )
+            photo = True
+        else:
+            data = data + ('storage/uploads/default.png',)
+        # if request.form['photo_thumbnail']:
+        #     thumbnail = request.form['photo_thumbnail']
+        #     thumbnail_path = save_base64(thumbnail, 'uploads/profiles', form.username.data + '_thumbnail')
+        #     data = data + (thumbnail_path,)
+        # else:
+        #     if photo:
+        #         data = data + (photo_path, )
+        #     else:
+        #         data = data + ('storage/uploads/default.png', )
+
+        sql = 'INSERT INTO users (name, email, username, password, photo) VALUES (?, ?, ?, ?, ?, ?)'
         app.logger.info(form)
         update_db(sql, data)
         msg = "You successfully signed up. You can now sign in"

@@ -12,7 +12,7 @@
                 </header>
                 <div class="card-content">
                     {% from "partials/_formhelpers.html" import render_field %}
-                    <form action="{{ url_for('register') }}" method="POST">
+                    <form action="{{ url_for('register') }}" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="intended" value="{{ request.args.next }}">
                         <div class="field">
                             {{ render_field(form.name, class_='input') }}
@@ -33,7 +33,8 @@
                             <label for="photo" class="label">Profile Photo</label>
                             <div class="file is-fullwidth has-name">
                                 <label class="file-label">
-                                    <input id="photo" class="file-input" type="file" name="resume">
+                                    <input id="photo" onchange="loadImage(this)" class="file-input" type="file" name="photo">
+                                    <input id="photo_thumbnail" type="hidden" name="photo_thumbnail">
                                     <span class="file-cta">
                                       <span class="file-icon">
                                         <i class="fas fa-upload"></i>
@@ -43,7 +44,7 @@
                                       </span>
                                     </span>
                                     <span class="file-name">
-                                      Screen Shot 2017-07-29 at 15.54.25.png
+
                                     </span>
                                 </label>
                             </div>
@@ -67,4 +68,64 @@
         </div>
     </div>
 </div>
+{% include 'modals/croppie.html'%}
+{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/croppie.css') }}">
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/croppie.js') }}"></script>
+<script>
+    function loadImage (evt) {
+        var files = evt.files;
+        if (files && files[0] && files[0].type.indexOf('image/') !== -1) {
+            var file = files[0];
+            $('.file-name').html(file.name);
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+                var base64 = (ev.target.result);
+                initCroppie(base64);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function initCroppie (url) {
+        var el = document.getElementById('croppable'); // $('.croppie-modal').find('#croppable');
+        var croppie = new Croppie(el, {
+            url: url,
+            viewport: { width: 100, height: 100, type: 'circle' },
+            boundary: { width: 300, height: 300 },
+            showZoomer: false,
+            enableResize: false,
+            enableOrientation: true,
+            mouseWheelZoom: 'ctrl'
+        });
+        $('.rotateCroppieLeft').click(function () {
+            croppie.rotate(-90)
+        });
+        $('.rotateCroppieRight').click(function () {
+            croppie.rotate(90)
+        });
+
+        $('.destroyCroppie').click(function () {
+            $('.croppie-modal').removeClass('is-active');
+            croppie.destroy();
+        });
+
+        $('.saveCroppie').click(function () {
+            croppie.result('base64').then(function (value) {
+                $('input[name="photo_thumbnail"]').val(value);
+                $('.destroyCroppie').click();
+            });
+        });
+
+        // Show modal
+        $('.croppie-modal').addClass('is-active');
+    }
+
+    $(function () {
+       console.log('hello, croppie.');
+    });
+</script>
 {% endblock %}
