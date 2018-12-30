@@ -1,0 +1,14 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flashes center">
+    {% for category, message in messages %}
+      <div class="notification is-{{ category }}">
+          <button class="delete"></button>
+          <h1 class="content">
+              {{ message }}
+          </h1>
+      </div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}

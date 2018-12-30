@@ -1,0 +1,30 @@
+{% extends 'layouts/main.html' %}
+
+{% block page %}
+<div>
+    <section class="hero is-medium is-primary is-bold center">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Welcome, Flasky Blogger
+                </h1><br>
+                <h2 class="subtitle">
+                    <div class="buttons are-medium are-rounded is-centered">
+                        {% if not session.logged_in -%}
+                            <a href="{{ url_for('register') }}" class="button is-dark is-rounded">Sign Up</a>
+                            <a href="{{ url_for('login') }}" class="button is-link is-rounded">Login</a>
+                        {% else %}
+                            <a href="{{ url_for('articles') }}" class="button is-danger is-outlined is-rounded">
+                                <span>Articles</span>
+                                <span class="icon is-small">
+                                  <i class="fas fa-book"></i>
+                                </span>
+                            </a>
+                        {% endif -%}
+                    </div>
+                </h2>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

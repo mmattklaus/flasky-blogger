@@ -1,0 +1,26 @@
+{% extends 'layouts/main.html' %}
+{% set active_page = 'articles' -%}
+{% block page %}
+<nav class="panel padded-top">
+  <p class="panel-heading">
+        Articles
+  </p>
+  <div class="panel-block">
+    <p class="control has-icons-left">
+      <input class="input is-small" type="text" placeholder="search">
+      <span class="icon is-small is-left">
+        <i class="fas fa-search" aria-hidden="true"></i>
+      </span>
+    </p>
+  </div>
+    {% for article in articles %}
+      <a class="panel-block is-active" href="/article/{{ article.id }}">
+        <span class="panel-icon">
+          <i class="fas fa-book" aria-hidden="true"></i>
+        </span>
+        <span>{{ article.title | truncate(50) }} {% if article.title | length > 50 -%} ... {%- endif %} &nbsp; by <i
+                href="#">@{{ article.author }} &nbsp; on {{ article.created_at }}</i></span>
+      </a>
+    {% endfor %}
+</nav>
+{% endblock %}

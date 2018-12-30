@@ -1,0 +1,13 @@
+{% extends 'layouts/main.html' %}
+{% set active_page = 'articles' -%}
+{% block page %}
+<div class="content is-medium padded-top">
+    <div class="message is-success">
+        <div class="message-body title">{{ article.title }}</div>
+    </div>
+
+    <p>
+        {{ article.body | safe }}
+    </p>
+</div>
+{% endblock %}

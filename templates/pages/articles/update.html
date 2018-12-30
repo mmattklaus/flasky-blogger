@@ -1,0 +1,52 @@
+{% extends 'layouts/dashboard.html' %}
+{% set active_tab = 'create' -%}
+{% block content %}
+<div class="padded-top">
+    {% from "partials/_formhelpers.html" import render_field %}
+    <form action="{{ url_for('update_article', key=article.id) }}" method="POST">
+        <div class="field">
+            {{ render_field(form.title, placeholder='Article title', class_='input') }}
+        </div>
+
+        <div class="field">
+            {{ render_field(form.body, placeholder='Article Content', class_='textarea') }}
+        </div>
+
+        <div class="field">
+            <label for="pub" class="label">Published? </label>
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" {% if article.published %} checked {% endif %} name="published" id="pub" value="1">
+                    Yes
+                </label>
+                <label class="radio">
+                    <input type="radio" {% if article.published == 0 %} checked {% endif %} name="published" value="0">
+                    No
+                </label>
+            </div>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button type="submit" class="button is-link">Update</button>
+            </div>
+            <div class="control">
+                <a class="button is-text" href="{{ url_for('dashboard') }}">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ckeditor/ckeditor.js') }}"></script>
+<script>
+    CKEDITOR.editorConfig = function( config ) {
+        config.language = 'es';
+        config.uiColor = '#F7B42C';
+        config.height = 300;
+        config.toolbarCanCollapse = true;
+    };
+    CKEDITOR.replace( 'body' );
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'layouts/main.html' %}
+{% set active_page = 'dashboard' -%}
+{% block page %}
+<div class="padded-top">
+    <h1 class="title">Dashboard,
+        <small>Welcome <a href="#">@{{ session.username }}</a></small>
+    </h1>
+    <div class="tabs is-centered">
+      <ul>
+        <li class="{% if 'articles' == active_tab %} is-active {% endif %}">
+          <a href="{{ url_for('dashboard') }}">
+            <span class="icon is-small"><i class="fas fa-book" aria-hidden="true"></i></span>
+            <span>Articles</span>
+          </a>
+        </li>
+        <li class="{% if 'create' == active_tab %} is-active {% endif %}">
+          <a href="{{ url_for('create_article') }}">
+            <span class="icon is-small"><i class="fas fa-pencil-alt" aria-hidden="true"></i></span>
+            <span>Create</span>
+          </a>
+        </li>
+        <li class="{% if 'pub' == active_tab %} is-active {% endif %}">
+          <a href="{{ url_for('published_articles') }}">
+            <span class="icon is-small"><i class="fas fa-rss" aria-hidden="true"></i></span>
+            <span>Published</span>
+          </a>
+        </li>
+        <li class="{% if 'trash' == active_tab %} is-active {% endif %}">
+          <a href="{{ url_for('deleted_articles') }}">
+            <span class="icon is-small"><i class="fas fa-trash" aria-hidden="true"></i></span>
+            <span>Trash</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+{% endblock %}

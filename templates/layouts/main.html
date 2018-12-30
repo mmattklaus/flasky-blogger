@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" class="has-navbar-fixed-top">
+<head>
+    <meta charset="UTF-8">
+    <title>Flasky Blog</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favs/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.css') }}">
+
+    {% block styles %}{% endblock %}
+</head>
+<body class="">
+<div>
+    {% include 'partials/_header.html' %}
+    <div class="container">
+        {% include 'partials/_messages.html' %}
+       {% block page %}{% endblock %}
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/font-awesome.js') }}"></script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

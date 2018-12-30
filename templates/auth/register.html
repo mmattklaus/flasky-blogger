@@ -1,0 +1,70 @@
+{% extends 'layouts/main.html' %}
+
+{% block page %}
+<div class="padded-top">
+    <div class="columns">
+        <div class="column is-three-fifths is-offset-one-fifth">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title title is-centered is-large">
+                        Register
+                    </p>
+                </header>
+                <div class="card-content">
+                    {% from "partials/_formhelpers.html" import render_field %}
+                    <form action="{{ url_for('register') }}" method="POST">
+                        <input type="hidden" name="intended" value="{{ request.args.next }}">
+                        <div class="field">
+                            {{ render_field(form.name, class_='input') }}
+                        </div>
+                        <div class="field">
+                            {{ render_field(form.email, class_='input') }}
+                        </div>
+                        <div class="field">
+                            {{ render_field(form.username, class_='input') }}
+                        </div>
+                        <div class="field">
+                            {{ render_field(form.password, class_='input') }}
+                        </div>
+                        <div class="field">
+                            {{ render_field(form.confirm, class_='input') }}
+                        </div>
+                        <div class="field">
+                            <label for="photo" class="label">Profile Photo</label>
+                            <div class="file is-fullwidth has-name">
+                                <label class="file-label">
+                                    <input id="photo" class="file-input" type="file" name="resume">
+                                    <span class="file-cta">
+                                      <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                      </span>
+                                      <span class="file-label">
+                                        Choose a file…
+                                      </span>
+                                    </span>
+                                    <span class="file-name">
+                                      Screen Shot 2017-07-29 at 15.54.25.png
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <div class="card-footer-item">
+                                <input type="submit" class="button is-primary is-fullwidth" value="Sign Up">
+                            </div>
+                        </footer>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer-item">
+                        <div class="content is-medium">
+                            Already have an account <a href="{{ url_for('login') }}">Login</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

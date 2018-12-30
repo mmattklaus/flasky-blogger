@@ -1,0 +1,62 @@
+{% extends 'layouts/dashboard.html' %}
+{% set active_tab = 'pub' -%}
+{% block content %}
+<div class="padded-top">
+    <div class="content">
+        <table class="table is-hoverable is-striped">
+            <thead>
+            <tr>
+                <th><abbr title="Position">Pos</abbr></th>
+                <th>Title</th>
+                <th>Published</th>
+                <th>Author</th>
+                <th>Creation date</th>
+                <th>Action &nbsp; <i class="fa fa-cogs"></i></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for article in articles -%}
+            <tr>
+                <th>{{ loop.index }}</th>
+                <td>
+                    {{ article.title | truncate(50) }} {% if article.title | length > 50 -%} ... {%- endif %}
+                </td>
+                <td>{% if article.published -%} Yes {% else %} No {% endif -%}</td>
+                <td><a href="#">@{{ article.author }}</a></td>
+                <td>{{ article.created_at }}</td>
+                <td>
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <a class="button is-link" href="{{ url_for('update_article', key=article.id) }}">
+                                <span>Edit</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                            </a>
+                        </p>
+                        <form method="POST" class="control" action="{{ url_for('withhold_article', key=article.id) }}">
+                            <button type="submit" class="button is-warning">
+                                <span>Withhold</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('delete_article', key=article.id) }}" class="control">
+                            <button type="submit" class="button is-danger is-outlined" {% if article.author != session.username -%} disabled {%- endif %}>
+                                <span>Delete</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor -%}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

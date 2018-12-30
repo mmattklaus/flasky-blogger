@@ -1,0 +1,24 @@
+nav.navbar {
+    box-shadow: -2px 1px 13px 0px!important;
+}
+.center {
+    text-align: center;
+}
+
+.app-name {
+    font-weight: bold;
+    font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
+}
+
+.active {
+    border-bottom: 2px solid mediumvioletred;
+}
+
+.required {
+    color: #ee0034;
+    font-size: 15px;
+}
+
+.padded-top {
+    padding-top: 59px;
+}

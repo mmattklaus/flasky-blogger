@@ -1,0 +1,43 @@
+{% extends 'layouts/main.html' %}
+
+{% block page %}
+<div class="padded-top">
+    <div class="columns">
+        <div class="column is-three-fifths is-offset-one-fifth">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title title is-centered">
+                        Login
+                    </p>
+                </header>
+                {% from 'partials/_formhelpers.html' import render_field %}
+                <div class="card-content">
+                    <form action="" method="POST">
+                        <input type="hidden" name="intended" id="intended" value="{{ request.args.next }}">
+                        <div class="field">
+                            {{ render_field(form.username, class_='input', placeholder='alexsmith') }}
+                        </div>
+
+                        <div class="field">
+                            {{ render_field(form.password, class_='input', placeholder='e.g. alexsmith@gmail.com') }}
+                        </div>
+                        <footer class="card-footer">
+                            <div class="card-footer-item">
+                                <input type="submit" class="button is-link is-fullwidth" value="Login">
+                            </div>
+                        </footer>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer-item">
+                        <div class="content is-medium">
+                            Don't have an account <a href="{{ url_for('register', next=request.args.next) }}">Sign Up</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
